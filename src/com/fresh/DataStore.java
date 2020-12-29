@@ -1,12 +1,13 @@
 package com.fresh;
 
-import netscape.javascript.JSObject;
 import org.json.JSONObject;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 
@@ -17,7 +18,6 @@ public class DataStore {
     }
 
     void writeData(String key, JSONObject value) throws IOException {
-        Scanner s=new Scanner(System.in);
         String val="";
             if (key.length() > 32) {
                 System.out.println("Enter a key value <32 chars! Unable to perform write!");
@@ -30,18 +30,16 @@ public class DataStore {
                 
             }
             catch (IOException e){System.out.println("Failed");}
-
-
     }
 
     void readData(String val) throws IOException {
         BufferedReader reader= new BufferedReader(new FileReader("/Users/yuvaraj/Desktop/jav/store1.txt"));
         String line= reader.readLine();
         int len=val.length();
-        while(line!=null)
+        while(line != null)
         {
             System.out.println(line+"/"+line.substring(0,len));
-            if(val.equals(line.substring(0,len))){
+            if(val.equals(line.substring(0,line.indexOf(":")))){
                 System.out.println("Value found!!");
                 System.out.println(line.substring(len+1,line.length()));
                 return;
@@ -53,17 +51,29 @@ public class DataStore {
     }
 
     void deleteData(String val) throws IOException {
+        List<String> data= new ArrayList<String>();
         BufferedReader reader = new BufferedReader(new FileReader("/Users/yuvaraj/Desktop/jav/store1.txt"));
         String line = reader.readLine();
-        int len=val.length();
-        while(line!=null){
-            if(val.equals(line.substring(0,len))){
-
+        int len=val.length(),i;
+        while(line != null){
+            System.out.println("********");
+            if(val.equals(line.substring(0,line.indexOf(":")))){
+                System.out.println(line+"/"+""+line.substring(0,line.indexOf(":"))+"***");
+                line=reader.readLine();
+            }
+            else{
+                System.out.println(line+"/"+""+line.substring(0,line.indexOf(":")));
+                data.add(line);
+                line=reader.readLine();
             }
         }
-
-
+        Path path = Path.of("/Users/yuvaraj/Desktop/jav/store1.txt");
+         Files.writeString(path,"", StandardOpenOption.TRUNCATE_EXISTING);
+        for(i=0;i<data.size();i++){
+            try {
+                Files.writeString(path,data.get(i)+"\n", StandardOpenOption.APPEND);
+            }
+            catch (IOException e){System.out.println("Failed");}
+        }
     }
-
-
 }

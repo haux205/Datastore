@@ -33,12 +33,10 @@ static DataStore ds;
 
                 case 3:
                     System.out.println("Enter the key value to be searched");
-                    ds.readData("keyval1");
+                    ds.readData("ts");
                     break;
 
-                case 4:
-                    System.out.println("Enter the key value to be deleted");
-                    ds.deleteData("key");
+                case 4: ds.deleteData("key123");break;
 
                 case 5: System.exit(0);
 
