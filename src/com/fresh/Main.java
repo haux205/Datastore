@@ -13,15 +13,19 @@ public class Main {
 static int menu=0;
 static DataStore ds;
     public static void main(String[] args) throws IOException, JSONException {
+        ds=new DataStore();
+        ds.setup();
         while(true) {
-            ds=new DataStore();
             System.out.println("File based data store menu");
             System.out.println("Select operation from the menu \n" +
                             "1.Create File \n" +
                             "2.Write data \n" +
                             "3.Read data \n" +
                             "4.Delete data \n" +
-                            "5.Exit");
+                            "5.Choose data store file \n"+
+                            "6.Exit");
+            System.out.println("Make sure data store is created");
+
             Scanner sc=new Scanner(System.in);
             menu=0;
             menu=sc.nextInt();
@@ -33,12 +37,14 @@ static DataStore ds;
 
                 case 3:
                     System.out.println("Enter the key value to be searched");
-                    ds.readData("ts");
+                    ds.readData("tsgi");
                     break;
 
-                case 4: ds.deleteData("key123");break;
+                case 4: ds.deleteData("tsgi");break;
 
-                case 5: System.exit(0);
+                case 5: ds.selectStore();break;
+
+                case 6: System.exit(0);
 
             }
         }
@@ -46,6 +52,7 @@ static DataStore ds;
 
     private static void getInput() throws JSONException, IOException {
         String key;
+        System.out.println("Enter the key value");
         Scanner s= new Scanner(System.in);
         key=s.nextLine();
         JSONObject json= new JSONObject();
