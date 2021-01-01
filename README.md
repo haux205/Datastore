@@ -12,7 +12,7 @@ Java JDK- 15.
  
  **Note: Default path has been set to `/Users/username/Desktop/jav/`(where jav is the folder in which the data store file is present).The user has to change 'username' to his corresponding user name in the code**. 
  **If required the user can set the default path (The folder in which the data store files are present) to his/her preference**. 
- **The variable to change is `private static string defpath` in the `DataStore` classs**
+ **The variable to change is `private static string defpath` in the `DataStore` class**
  
 ## Performing Operations in the DataStore
  Basic operatios can be performed using the following method calls.  
