@@ -15,12 +15,12 @@ public class DataStore {
     private static final String UNLOCK="0";
     private static String defpath="/Users/yuvaraj/Desktop/jav/";//default folder path for all data stores (path format= /Users/username/Desktop/jav/)
     private static String finalpath="";
+    private static final long FILESIZE=1000000000;
 
     void setup() throws IOException {
         //Setup the initial directory
-        System.out.println("Done1");
         File dir= new File(defpath);
-        System.out.println(dir.mkdir());
+        dir.mkdirs();
     }
 
     void createFile() throws IOException {
@@ -66,6 +66,11 @@ public class DataStore {
                 reader.close();
                 return;
             }
+        if(Files.size(Path.of(finalpath))>FILESIZE){
+            System.out.println("File Size greater than 1GB. Unable to perform write.");
+            changeAccessStatus(UNLOCK);
+            return;
+        }
         line=reader.readLine();
         while (line != null)
         {
@@ -81,7 +86,6 @@ public class DataStore {
             }
         }
 
-        System.out.println("*&"+key);
             val=val+key+":"+value.toString()+"*/*"+time+"\n";
             try {
                 Path filepath = Path.of(finalpath);
@@ -123,7 +127,7 @@ public class DataStore {
                     return;
                 }
                 else{
-                System.out.println("Value found!!"+time);
+                System.out.println("Value found!!");
                 System.out.println(line.substring(len+1,line.indexOf("*/*")));
                 changeAccessStatus(UNLOCK);
                 reader.close();
@@ -152,13 +156,10 @@ public class DataStore {
             return;
         }
         while(line != null){
-            System.out.println("********");
             if(val.equals(line.substring(0,line.indexOf(":")))){
-                System.out.println(line+"/"+""+line.substring(0,line.indexOf(":"))+"***");
                 line=reader.readLine();
             }
             else {
-                System.out.println(line+"/"+""+line.substring(0,line.indexOf(":")));
                 data.add(line);
                 line=reader.readLine();
             }

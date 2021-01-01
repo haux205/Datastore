@@ -40,7 +40,7 @@ static DataStore ds;
                     ds.readData("test12345");
                     break;
 
-                case 4: ds.deleteData("tsgi");break;
+                case 4: ds.deleteData("testval");break;
 
                 case 5: ds.selectStore();break;
 
