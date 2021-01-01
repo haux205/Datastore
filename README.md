@@ -1,5 +1,5 @@
 # Datastore - Freshworks Assignment 
 
-##Envirionment
+## Envirionment
 Operating System- Mac OS Catalina and above
 Java JDK- 15
