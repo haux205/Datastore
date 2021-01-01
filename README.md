@@ -1,8 +1,8 @@
 # Datastore - Freshworks Assignment 
 
 ## Envirionment
-Operating System- Mac OS Catalina and above
-Java JDK- 15
+Operating System- Mac OS Catalina and above. 
+Java JDK- 15. 
 
 ## Setup and initialisation
  The class must be initialised by running `DataStore obj= new DataStore();`.  
