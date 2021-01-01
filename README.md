@@ -12,9 +12,9 @@ Java JDK- 15
  
 ## Performing Operations in the DataStore
  Basic operatios can be performed using the following method calls.  
- `void writeData(String key, JSONObject value, String time)` - Write data for a given key JSON object and time. 
- `void readData(String val)` - Read data for a given key. 
- `void deleteData(String val)` - Delete data for a given key value.  
+ `void writeData(String key, JSONObject value, String time)` - Write data for a given key JSON object and time.  
+ `void readData(String val)` - Read data for a given key.  
+ `void deleteData(String val)` - Delete data for a given key value.   
  
  
  
