@@ -70,6 +70,7 @@ public class DataStore {
         if(Files.size(Path.of(finalpath))>FILESIZE){
             System.out.println("File Size greater than 1GB. Unable to perform write.");
             changeAccessStatus(UNLOCK);
+            reader.close();
             return;
         }
         line=reader.readLine();
@@ -118,6 +119,7 @@ public class DataStore {
                     System.out.println(line.substring(len+1,line.indexOf("*/*")));
                     changeAccessStatus(UNLOCK);
                     JSONObject js=new JSONObject(line.substring(len+1,line.indexOf("*/*")));
+                    reader.close();
                     return js;
                 }
                 else if((System.currentTimeMillis()/1000)>Long.parseLong(time))
