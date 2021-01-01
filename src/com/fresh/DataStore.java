@@ -1,5 +1,6 @@
 package com.fresh;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -96,7 +97,7 @@ public class DataStore {
             changeAccessStatus(UNLOCK);
     }
 
-    void readData(String val) throws IOException {
+    JSONObject readData(String val) throws IOException, JSONException {
         BufferedReader reader= new BufferedReader(new FileReader(finalpath));
         String line= reader.readLine();
         int len=val.length();
@@ -106,7 +107,7 @@ public class DataStore {
         }
         else{
             System.out.println("File already in access by another process. Please try again later.");
-            return;
+            return null;
         }
         while(line != null) //Check whether you need this variable
         {
@@ -116,22 +117,16 @@ public class DataStore {
                     System.out.println("Value found");
                     System.out.println(line.substring(len+1,line.indexOf("*/*")));
                     changeAccessStatus(UNLOCK);
-                    return;
+                    JSONObject js=new JSONObject(line.substring(len+1,line.indexOf("*/*")));
+                    return js;
                 }
-                if((System.currentTimeMillis()/1000)>Long.parseLong(time))
+                else if((System.currentTimeMillis()/1000)>Long.parseLong(time))
                 {
                     System.out.println("Value time limit over!");
                     changeAccessStatus(UNLOCK);
                     deleteData(val);
                     reader.close();
-                    return;
-                }
-                else{
-                System.out.println("Value found!!");
-                System.out.println(line.substring(len+1,line.indexOf("*/*")));
-                changeAccessStatus(UNLOCK);
-                reader.close();
-                return;
+                    return null;
                 }
             }
             else {line=reader.readLine();}
@@ -139,6 +134,7 @@ public class DataStore {
         System.out.println("The value is not found");
         reader.close();
         changeAccessStatus(UNLOCK);
+        return null;
     }
 
     void deleteData(String val) throws IOException {
