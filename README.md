@@ -23,7 +23,7 @@ Java JDK- 15.
  ## Datastore file format
  Every store is a txt file in which each record(key-value pair) is stored line by line. 
  Line 1 of the file always has '0'. It represents a simple mutex lock to prevent other processes from accessing the store when it is already in access. 
- Every process when accessing the file sets line 1 to '1'. So when another process or thread accesses the same file and finds '1' in line 1 it is not allowed to access the file. 
+ Every process when accessing the file sets line 1 to '1'. So when another process or thread accesses the same file and finds '1' in line 1, it is not allowed to access the file. 
  After completion of the operation the process removes its access by changing line 1 to '0'. 
  
  
