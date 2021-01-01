@@ -24,7 +24,7 @@ static DataStore ds;
                             "4.Delete data \n" +
                             "5.Choose data store file \n"+
                             "6.Exit");
-            System.out.println("Make sure data store is created");
+            System.out.println("Make sure data store is created its folder path is set manually in the code");
 
             Scanner sc=new Scanner(System.in);
             menu=0;
@@ -37,10 +37,13 @@ static DataStore ds;
 
                 case 3:
                     System.out.println("Enter the key value to be searched");
-                    ds.readData("fin");
+                    ds.readData(getVal());
                     break;
 
-                case 4: ds.deleteData("te");break;
+                case 4:
+                    System.out.println("Enter the key value to be deleted");
+                    ds.deleteData(getVal());
+                    break;
 
                 case 5: ds.selectStore();break;
 
@@ -48,6 +51,12 @@ static DataStore ds;
 
             }
         }
+    }
+
+    private static String getVal() {
+        Scanner sc=new Scanner(System.in);
+        String val=sc.nextLine();
+        return val;
     }
 
     private static void getInput() throws JSONException, IOException {
