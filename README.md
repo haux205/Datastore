@@ -6,7 +6,7 @@ Java JDK- 15.
 
 ## Setup and initialisation
  The class must be initialised by running `DataStore obj= new DataStore();`.  
- When running first time `obj.setup()` must be called to setup the directories **see note before running setup()**.  
+ When running first time `obj.setup()` must be called to setup the directories **[see note before running setup()**].  
  After setting up the directories `obj.createFile()` must be called to create a new data store.  
  `obj.selectStore` can be used to switch between mulitple datastores in the default directory. 
  
