@@ -1,1 +1,0 @@
-keyval:{"name":"sonoo","salary":600000,"age":27}
