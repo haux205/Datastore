@@ -37,7 +37,7 @@ static DataStore ds;
 
                 case 3:
                     System.out.println("Enter the key value to be searched");
-                    ds.readData("tsgi");
+                    ds.readData("test12345");
                     break;
 
                 case 4: ds.deleteData("tsgi");break;
@@ -52,14 +52,24 @@ static DataStore ds;
 
     private static void getInput() throws JSONException, IOException {
         String key;
+        long time = System.currentTimeMillis()/1000;
+        long t=0;
         System.out.println("Enter the key value");
         Scanner s= new Scanner(System.in);
         key=s.nextLine();
+        System.out.println("Enter time-to-live value (in seconds)(Enter '0' if not needed");
+        t=s.nextLong();
+        if(t==0){
+            time=0;
+        }
+        else{
+            time=time+t;
+        }
         JSONObject json= new JSONObject();
         json.put("name","sonoo");
         json.put("age",27);
         json.put("salary",600000);
-        ds.writeData(key,json);
+        ds.writeData(key,json,Long.toString(time));
     }
 
 }

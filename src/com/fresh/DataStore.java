@@ -14,7 +14,7 @@ public class DataStore {
     private static final String LOCK="1";
     private static final String UNLOCK="0";
     private static String defpath="/Users/yuvaraj/Desktop/jav/";//default folder path for all data stores (path format= /Users/username/Desktop/jav/)
-    private static String path="";
+    private static String finalpath="";
 
     void setup() throws IOException {
         //Setup the initial directory
@@ -27,40 +27,43 @@ public class DataStore {
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter the file name");
         String name= sc.nextLine();
-        File fileobj= new File("/Users/yuvaraj/Desktop/jav/"+name);
+        File fileobj= new File(defpath+name);
         if(!fileobj.createNewFile())
         {
             System.out.println("File already exists.");
             return;
         }
         else{
-            path=path.concat(defpath).concat(name);
-            RandomAccessFile ra= new RandomAccessFile(path,"rw");
+            finalpath="";
+            finalpath=finalpath.concat(defpath).concat(name);
+            RandomAccessFile ra= new RandomAccessFile(finalpath,"rw");
             ra.seek(0);
             ra.write("0\n".getBytes());
             System.out.println("File created succesfully. File path set automatically");
         }
     }
 
-    void writeData(String key, JSONObject value) throws IOException {
+    void writeData(String key, JSONObject value, String time) throws IOException {
         if(value.toString().getBytes().length>16000)
         {
             System.out.println("Unable to write data. Size of JSON value >16KB");
             return;
         }
         String val="";
-        BufferedReader reader= new BufferedReader(new FileReader("/Users/yuvaraj/Desktop/jav/store2.txt"));
+        BufferedReader reader= new BufferedReader(new FileReader(finalpath));
         String line = reader.readLine();
         if(line.equals("0")){
             changeAccessStatus(LOCK);
         }
         else {
             System.out.println("File already in access by another process. Please try again later.");
+            reader.close();
             return;
         }
         if (key.length() > 32) {
                 System.out.println("Enter a key value <32 chars! Unable to perform write!");
                 changeAccessStatus(UNLOCK);
+                reader.close();
                 return;
             }
         line=reader.readLine();
@@ -69,6 +72,7 @@ public class DataStore {
             if(line.substring(0,line.indexOf(":")).equals(key))
             {
                 System.out.println("Value already exists");
+                reader.close();
                 changeAccessStatus(UNLOCK);
                 return;
             }
@@ -78,17 +82,18 @@ public class DataStore {
         }
 
         System.out.println("*&"+key);
-            val=val+key+":"+value.toString()+"\n";
+            val=val+key+":"+value.toString()+"*/*"+time+"\n";
             try {
-                Path filepath = Path.of("/Users/yuvaraj/Desktop/jav/store2.txt");
+                Path filepath = Path.of(finalpath);
                 Files.writeString(filepath,val, StandardOpenOption.APPEND);
             }
             catch (IOException e){System.out.println("Failed");}
+            reader.close();
             changeAccessStatus(UNLOCK);
     }
 
     void readData(String val) throws IOException {
-        BufferedReader reader= new BufferedReader(new FileReader("/Users/yuvaraj/Desktop/jav/store2.txt"));
+        BufferedReader reader= new BufferedReader(new FileReader(finalpath));
         String line= reader.readLine();
         int len=val.length();
         if(line.equals("0")){
@@ -102,9 +107,28 @@ public class DataStore {
         while(line != null) //Check whether you need this variable
         {
             if(val.equals(line.substring(0,line.indexOf(":")))){
-                System.out.println("Value found!!");
-                System.out.println(line.substring(len+1,line.length()));
+                String time=line.substring(line.indexOf("*/*")+3,line.length());
+                if(time.equals("0")){
+                    System.out.println("Value found");
+                    System.out.println(line.substring(len+1,line.indexOf("*/*")));
+                    changeAccessStatus(UNLOCK);
+                    return;
+                }
+                if((System.currentTimeMillis()/1000)>Long.parseLong(time))
+                {
+                    System.out.println("Value time limit over!");
+                    changeAccessStatus(UNLOCK);
+                    deleteData(val);
+                    reader.close();
+                    return;
+                }
+                else{
+                System.out.println("Value found!!"+time);
+                System.out.println(line.substring(len+1,line.indexOf("*/*")));
+                changeAccessStatus(UNLOCK);
+                reader.close();
                 return;
+                }
             }
             else {line=reader.readLine();}
         }
@@ -115,7 +139,7 @@ public class DataStore {
 
     void deleteData(String val) throws IOException {
         List<String> data= new ArrayList<String>();
-        BufferedReader reader = new BufferedReader(new FileReader("/Users/yuvaraj/Desktop/jav/store1.txt"));
+        BufferedReader reader = new BufferedReader(new FileReader(finalpath));
         String line = reader.readLine();
         int i;
         if(line != null){
@@ -139,7 +163,7 @@ public class DataStore {
                 line=reader.readLine();
             }
         }
-        Path path = Path.of("/Users/yuvaraj/Desktop/jav/store1.txt");
+        Path path = Path.of(finalpath);
         Files.writeString(path,"", StandardOpenOption.TRUNCATE_EXISTING);
         for(i=0;i<data.size();i++){
             try {
@@ -151,7 +175,7 @@ public class DataStore {
         changeAccessStatus(UNLOCK);
     }
    private void changeAccessStatus(String val) throws IOException {
-        RandomAccessFile ra=new RandomAccessFile("/Users/yuvaraj/Desktop/jav/store1.txt","rw");
+        RandomAccessFile ra=new RandomAccessFile(finalpath,"rw");
         ra.seek(0);
         ra.write(val.getBytes());
         ra.close();
@@ -161,8 +185,9 @@ public class DataStore {
         System.out.println("Enter the file name to select (with .txt extension)");
         Scanner sc = new Scanner(System.in);
         String name = sc.nextLine();
-        path=defpath+name;
-        System.out.println("store name set"+path);
+        finalpath="";
+        finalpath=defpath+name;
+        System.out.println("store name set"+finalpath);
     }
 
 
